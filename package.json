@@ -1,0 +1,41 @@
+{
+  "name": "meow-reverse",
+  "version": "0.0.1",
+  "description": "Generate argument array from meow input and flags",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha.js -- test/*.test.js",
+    "test:debug": "./node_modules/mocha/bin/mocha.js --no-timeouts --inspect-brk -- test/*.test.js",
+    "test:watch": "./node_modules/mocha/bin/mocha.js --parallel --watch -- test/*.test.js",
+    "coverage": "./node_modules/c8/bin/c8.js ./node_modules/mocha/bin/mocha.js --parallel -- test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chung-leong/meow-reverse.git"
+  },
+  "keywords": [
+    "meow",
+    "cli",
+    "cmd",
+    "command",
+    "argv",
+    "input",
+    "flags"
+  ],
+  "author": "Chung Leong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chung-leong/meow-reverse/issues"
+  },
+  "homepage": "https://github.com/chung-leong/meow-reverse#readme",
+  "devDependencies": {
+    "c8": "^7.12.0",
+    "chai": "^4.3.7",
+    "meow": "10.0.0",
+    "mocha": "^10.2.0"
+  },
+  "peerDependencies": {
+    "meow": "^10.0.0"
+  }
+}
