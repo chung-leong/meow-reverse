@@ -73,5 +73,5 @@ Will produce:
 [ 'show', '-f', 'meow.gif', '-f', 'woof.gif' ]
 ```
 
-Use a package like [shell-quotes](https://github.com/ljharb/shell-quote#README) to convert the 
+Use a package like [shell-quote](https://github.com/ljharb/shell-quote#README) to convert the 
 array outputted by the function into an actual command-line.
