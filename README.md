@@ -26,8 +26,8 @@ const options = {
   }
 };
 const cli = {
-	input: [ 'unicorns' ],
-	flags: { rainbow: true },
+  input: [ 'unicorns' ],
+  flags: { rainbow: true },
 };
 
 const argv = meowrev(cli, options);
@@ -60,8 +60,8 @@ const options = {
   }
 };
 const cli = {
-	input: [ 'show' ],
-	flags: { file: [ 'meow.gif', 'woof.gif' ] },
+  input: [ 'show' ],
+  flags: { file: [ 'meow.gif', 'woof.gif' ] },
 };
 
 const argv = meowrev(cli, options);
