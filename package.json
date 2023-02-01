@@ -1,6 +1,6 @@
 {
   "name": "meow-reverse",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Generate argument array from meow input and flags",
   "main": "index.js",
   "type": "module",

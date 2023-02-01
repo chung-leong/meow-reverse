@@ -1,4 +1,4 @@
-# meow-reverse
+# meow-reverse ![ci](https://img.shields.io/github/actions/workflow/status/chung-leong/meow-reverse/node.js.yml?branch=main&label=Node.js%20CI&logo=github) ![nycrc config on GitHub](https://img.shields.io/nycrc/chung-leong/meow-reverse)
 
 Generate arguments that would produce the given input and flags in accordance to 
 [meow](https://github.com/sindresorhus/meow#readme) options.
