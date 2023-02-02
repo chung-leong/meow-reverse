@@ -74,6 +74,7 @@ export default function meowrev({ input, flags }, options) {
 }
 
 export function meowparse(argv, options) {
+  // flags for minimist-options
   const parserFlags = {
     arguments: 'string',
   };
@@ -98,8 +99,11 @@ export function meowparse(argv, options) {
     const flagKey = decamelize(name);
     parserFlags[flagKey] = flag;
   }
+  // create yargs options using minimist-options
   const parserOptions = buildOptions(parserFlags);
+  // parse commands using yargs-parser
   const { _: input, ...flagValues } = parse(argv, parserOptions);
+  // fish values from yargs results
   const flags = {};
   for (const [ name, specs ] of Object.entries(options.flags)) {
     const { 
