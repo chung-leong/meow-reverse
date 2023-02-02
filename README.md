@@ -31,6 +31,7 @@ const cli = {
 };
 
 const argv = meowrev(cli, options);
+console.log(argv);
 ```
 
 Output:
@@ -38,6 +39,36 @@ Output:
 ```
 [ 'unicorns', '--rainbow' ]
 ```
+
+Since meow does not provide a function that simply parses arguments, `meowparse` is available 
+for this purpose: 
+
+```js
+import { meowparse } from 'meow-reverse';
+
+const options = {
+  importMeta: import.meta,
+  flags: {
+    rainbow: {
+      type: 'boolean',
+      alias: 'r'
+    }
+  }
+};
+
+const argv = [ 'unicorns', '-r' ];
+const { input, flags } = meowparse(argv, options);
+console.log(input, flags);
+```
+
+Output:
+
+```
+[ 'unicorns' ] { rainbow: true }
+```
+
+`meowparse` can only handle common use cases. It does not support, for instance, returning of 
+unknown flags.
 
 ## Notes
 

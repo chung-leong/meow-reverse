@@ -1,20 +1,22 @@
-import parser from 'yargs-parser';
+import parse from 'yargs-parser';
+import buildOptions from 'minimist-options';
 
-const { decamelize } = parser;
+const { decamelize } = parse;
 
 export default function meowrev({ input, flags }, options) {
   const argv = [];
   for (const value of input) {
     argv.push(`${value}`);
   }
+  const booleanDefault = options.booleanDefault || false;
   for (const [ name, specs ] of Object.entries(options.flags)) {
     const { 
-      alias, 
       type, 
       isMultiple = false, 
       isRequired = false, 
     } = specs;
-    const defVal = (type === 'boolean') ? specs.default || false : specs.default;
+    const alias = Array.isArray(specs.alias) ? specs.alias[0] : specs.alias;
+    const defVal = (type === 'boolean') ? specs.default || booleanDefault : specs.default;
     const value = flags[name];
     if (value == null) {
       // enforce requirement
@@ -70,3 +72,52 @@ export default function meowrev({ input, flags }, options) {
   }
   return argv;
 }
+
+export function meowparse(argv, options) {
+  const parserFlags = {
+    arguments: 'string',
+  };
+  const booleanDefault = options.booleanDefault || false;
+  for (const [ name, specs ] of Object.entries(options.flags)) {
+    const { 
+      alias, 
+      type, 
+      isMultiple = false, 
+    } = specs;
+    const defVal = (type === 'boolean') ? specs.default || booleanDefault : specs.default;
+    const flag = { alias };
+    if (isMultiple) {
+      flag.type = (type) ? `${type}-array` : 'array';
+      flag.default = defVal || [];
+    } else {
+      flag.type = type;
+      if (defVal !== undefined) {
+        flag.default = defVal;
+      }
+    }
+    const flagKey = decamelize(name);
+    parserFlags[flagKey] = flag;
+  }
+  const parserOptions = buildOptions(parserFlags);
+  const { _: input, ...flagValues } = parse(argv, parserOptions);
+  const flags = {};
+  for (const [ name, specs ] of Object.entries(options.flags)) {
+    const { 
+      isRequired = false, 
+      isMultiple = false,
+    } = specs;
+    const value = flagValues[name];
+    if (value !== undefined) {
+      if (Array.isArray(value) && !isMultiple) {
+        throw new Error(`--${decamelize(name)} can only be specified once`);
+      } 
+      flags[name] = value;
+    } else {
+      if (isRequired) {
+        throw new Error(`--${decamelize(name)} is required`);
+      }
+    }
+  }
+  return { input, flags };
+} 
+

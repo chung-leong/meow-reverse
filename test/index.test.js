@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import meowrev from '../index.js';
+import meowrev, { meowparse } from '../index.js';
 
 describe(`#meowrev`, function() {
   it('should handle command with zero flags', function() {
@@ -87,6 +87,24 @@ describe(`#meowrev`, function() {
       flags: {
         donutType: {
           alias: 't',
+          isMultiple: true,
+          type: 'string',
+          default: [ 'strawberry', 'cherry' ]
+        }
+      }
+    };
+    const cli = {
+      input: [ 'unicorns' ],
+      flags: { donutType: [ 'marmite', 'anchovy' ] },
+    };
+    const argv = meowrev(cli, options);
+    expect(argv).to.eql([ 'unicorns', '-t', 'marmite', '-t', 'anchovy' ]);
+  })
+  it('should use first alias in list', function() {
+    const options = {
+      flags: {
+        donutType: {
+          alias: [ 't', 'd' ],
           isMultiple: true,
           type: 'string',
           default: [ 'strawberry', 'cherry' ]
@@ -310,5 +328,127 @@ describe(`#meowrev`, function() {
       flags: { rainbow: false, donutType: [ 'marmite' ] },
     };
     expect(() => meowrev(cli, options)).to.throw();
+  })
+})
+
+describe('#meowparse', function() {
+  it('should parse command with no flag', function() {
+    const options = {
+      flags: {
+        rainbow: {
+          type: 'string',
+          alias: 'r',          
+        }
+      }
+    };
+    const argv = [ 'unicorns' ];
+    const { input, flags } = meowparse(argv, options);
+    expect(input).to.eql([ 'unicorns' ]);
+    expect(flags).to.eql({});
+  })
+
+  it('should parse command with boolean flag', function() {
+    const options = {
+      flags: {
+        rainbow: {
+          type: 'boolean',
+          alias: 'r',          
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--rainbow' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ rainbow: true });
+  })
+  it('should parse command with numeric flag', function() {
+    const options = {
+      flags: {
+        donutCount: {
+          type: 'number',
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--donut-count', '8' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ donutCount: 8 });
+  })
+  it('should parse command with string flag', function() {
+    const options = {
+      flags: {
+        donutType: {
+          type: 'string',
+          default: 'strawberry'
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--donut-type', 'marmite' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ donutType: 'marmite' });
+  })
+  it('should parse command with multi-variable flag', function() {
+    const options = {
+      flags: {
+        donutType: {
+          isMultiple: true,
+          type: 'string',
+          default: [ 'strawberry', 'cherry' ]
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--donut-type', 'marmite', '--donut-type', 'anchovy' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ donutType: [ 'marmite', 'anchovy' ] });
+  })
+  it('should parse command with multi-variable flag with no type', function() {
+    const options = {
+      flags: {
+        donutType: {
+          isMultiple: true,
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--donut-type', 'marmite', '--donut-type', 'anchovy' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ donutType: [ 'marmite', 'anchovy' ] });
+  })
+  it('should parse command using aliases', function() {
+    const options = {
+      flags: {
+        donutType: {
+          alias: [ 't', 'd' ],
+          isMultiple: true,
+          type: 'string',
+          default: [ 'strawberry', 'cherry' ]
+        }
+      }
+    };
+    const argv = [ 'unicorns', '-t', 'marmite', '-d', 'anchovy' ];
+    const { flags } = meowparse(argv, options);
+    expect(flags).to.eql({ donutType: [ 'marmite', 'anchovy' ] });
+  })
+  it('should throw when a flag is specified more than once', function() {
+    const options = {
+      flags: {
+        donutType: {
+          isMultiple: false,
+          type: 'string',
+          default: 'strawberry'
+        }
+      }
+    };
+    const argv = [ 'unicorns', '--donut-type', 'marmite', '--donut-type', 'anchovy' ];
+    expect(() => meowparse(argv, options)).to.throw();
+  })
+  it('should throw when a required flag is missing', function() {
+    const options = {
+      flags: {
+        donutType: {
+          isRequired: true,
+          type: 'string',
+        }
+      }
+    };
+    const argv = [ 'unicorns' ];
+    expect(() => meowparse(argv, options)).to.throw();
   })
 })
