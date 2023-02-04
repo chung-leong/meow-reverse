@@ -1,6 +1,6 @@
 {
   "name": "meow-reverse",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Generate argument array from meow input and flags",
   "main": "index.js",
   "type": "module",
@@ -36,6 +36,6 @@
     "mocha": "^10.2.0"
   },
   "peerDependencies": {
-    "meow": ">10.0.0"
+    "meow": ">= 10.0.0"
   }
 }
